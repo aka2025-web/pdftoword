@@ -1,0 +1,181 @@
+/* --- Biến màu và Cài đặt chung --- */
+:root {
+  --primary-color: #4285f4;
+  --primary-hover-color: #357ae8;
+  --background-color-light: #f8f9fa;
+  --background-color-dark: #202124;
+  --text-color-light: #202124;
+  --text-color-dark: #e8eaed;
+  --border-color-light: #dadce0;
+  --border-color-dark: #5f6368;
+  --surface-color-light: #ffffff;
+  --surface-color-dark: #2d2e30;
+}
+
+body {
+  font-family: 'Google Sans', sans-serif, Arial;
+  margin: 0;
+  padding: 2rem;
+  /* Hỗ trợ chế độ sáng/tối tự động của hệ điều hành */
+  color: light-dark(var(--text-color-light), var(--text-color-dark));
+  background-color: light-dark(var(--background-color-light), var(--background-color-dark));
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+main {
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+/* --- Kiểu chữ (Typography) --- */
+h1 {
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: light-dark( #5f6368, #9aa0a6);
+}
+
+/* --- Khu vực tải file (Upload Area) --- */
+.upload-area {
+  border: 2px dashed var(--border-color-light);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* Hiệu ứng khi di chuột hoặc kéo file vào */
+.upload-area:hover, .upload-area.drag-over {
+  background-color: light-dark(#f1f3f4, var(--surface-color-dark));
+  border-color: var(--primary-color);
+}
+
+.upload-label {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  display: inline-block;
+}
+
+.upload-label:hover {
+  background-color: var(--primary-hover-color);
+}
+
+.drag-drop-info {
+  margin: 1rem 0 0.5rem 0;
+  color: light-dark( #5f6368, #9aa0a6);
+  font-size: 1rem;
+}
+
+#file-name {
+  display: block;
+  margin-top: 1rem;
+  font-style: italic;
+  color: light-dark( #5f6368, #9aa0a6);
+}
+
+/* --- Các nút bấm (Buttons) --- */
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background-color: var(--primary-hover-color);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* --- Trạng thái ẩn và Loading Spinner --- */
+.hidden {
+  display: none !important;
+}
+
+#loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid var(--primary-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Khu vực kết quả (Result Area) --- */
+#result-container {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.output-box {
+  border: 1px solid var(--border-color-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  background-color: light-dark(var(--surface-color-light), var(--surface-color-dark));
+  min-height: 200px;
+  max-height: 50vh;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* --- Các nút hành động (Actions) --- */
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.actions #download-btn {
+  background-color: #34a853; /* Xanh lá cây */
+}
+.actions #download-btn:hover:not(:disabled) {
+  background-color: #2c9348;
+}
+
+.actions #download-xls-btn {
+  background-color: #188038; /* Xanh lá cây đậm hơn */
+}
+.actions #download-xls-btn:hover:not(:disabled) {
+  background-color: #136c2e;
+}
+
+.actions #copy-btn {
+  background-color: #fbbc05; /* Vàng */
+}
+.actions #copy-btn:hover:not(:disabled) {
+  background-color: #f2b000;
+}

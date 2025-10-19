@@ -1,0 +1,5 @@
+{
+  "name": "Chuyển PDF sang Word",
+  "description": "Một ứng dụng ví dụ để chuyển đổi file PDF sang Word sử dụng Gemini",
+  "requestFramePermissions": []
+}
