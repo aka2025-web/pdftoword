@@ -15,27 +15,40 @@
     <h1>Chuyển đổi PDF sang Word & Excel</h1>
     <p>Tải lên file PDF của bạn và chúng tôi sẽ chuyển đổi nó sang định dạng văn bản có thể chỉnh sửa.</p>
     
-    <!-- Khu vực tải file lên -->
-    <div class="upload-area">
-      <input type="file" id="pdf-upload" accept="application/pdf" hidden>
-      <label for="pdf-upload" class="upload-label">Chọn File PDF</label>
-      <p class="drag-drop-info">Hoặc kéo và thả file vào đây</p>
-      <span id="file-name">Chưa có file nào được chọn</span>
+    <!-- Khu vực nhập API Key -->
+    <div class="api-key-container">
+      <h3>Nhập Khóa API Gemini</h3>
+      <p class="api-key-info">Để sử dụng ứng dụng, bạn cần cung cấp khóa API Google AI Studio của riêng bạn. Ứng dụng sẽ lưu khóa vào bộ nhớ cục bộ của trình duyệt.</p>
+      <div class="api-key-input-group">
+          <input type="password" id="api-key-input" placeholder="Dán khóa API của bạn vào đây">
+          <button id="save-api-key-btn">Lưu Khóa</button>
+      </div>
+      <p id="api-key-status" class="hidden"></p>
     </div>
-    
-    <button id="convert-btn" disabled>Chuyển đổi</button>
-    
-    <!-- Hiển thị khi đang xử lý -->
-    <div id="loader" class="hidden"></div>
-    
-    <!-- Khu vực hiển thị kết quả -->
-    <div id="result-container" class="hidden">
-      <h2>Kết quả chuyển đổi:</h2>
-      <div id="output" class="output-box" role="document" aria-live="assertive"></div>
-      <div class="actions">
-        <button id="copy-btn">Sao chép văn bản</button>
-        <button id="download-btn">Tải xuống file Word (.doc)</button>
-        <button id="download-xls-btn">Tải xuống file Excel (.xls)</button>
+
+    <div class="app-content">
+      <!-- Khu vực tải file lên -->
+      <div class="upload-area">
+        <input type="file" id="pdf-upload" accept="application/pdf" hidden>
+        <label for="pdf-upload" class="upload-label">Chọn File PDF</label>
+        <p class="drag-drop-info">Hoặc kéo và thả file vào đây</p>
+        <span id="file-name">Chưa có file nào được chọn</span>
+      </div>
+      
+      <button id="convert-btn" disabled>Chuyển đổi</button>
+      
+      <!-- Hiển thị khi đang xử lý -->
+      <div id="loader" class="hidden"></div>
+      
+      <!-- Khu vực hiển thị kết quả -->
+      <div id="result-container" class="hidden">
+        <h2>Kết quả chuyển đổi:</h2>
+        <div id="output" class="output-box" role="document" aria-live="assertive"></div>
+        <div class="actions">
+          <button id="copy-btn">Sao chép văn bản</button>
+          <button id="download-btn">Tải xuống file Word (.doc)</button>
+          <button id="download-xls-btn">Tải xuống file Excel (.xls)</button>
+        </div>
       </div>
     </div>
   </main>

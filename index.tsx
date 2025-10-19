@@ -9,6 +9,11 @@ import { GoogleGenAI } from '@google/genai';
 import { marked } from 'marked';
 
 // --- Lấy các phần tử DOM ---
+const apiKeyInput = document.getElementById('api-key-input') as HTMLInputElement;
+const saveApiKeyBtn = document.getElementById('save-api-key-btn') as HTMLButtonElement;
+const apiKeyStatus = document.getElementById('api-key-status') as HTMLParagraphElement;
+const appContent = document.querySelector('.app-content') as HTMLDivElement;
+
 const uploadInput = document.getElementById('pdf-upload') as HTMLInputElement;
 const uploadArea = document.querySelector('.upload-area') as HTMLDivElement;
 const fileNameSpan = document.getElementById('file-name') as HTMLSpanElement;
@@ -21,8 +26,66 @@ const downloadBtn = document.getElementById('download-btn') as HTMLButtonElement
 const downloadXlsBtn = document.getElementById('download-xls-btn') as HTMLButtonElement;
 
 // --- Quản lý trạng thái ứng dụng ---
+let apiKey: string | null = null;
 let selectedFile: File | null = null;
 let rawTextResult = ''; // Lưu trữ văn bản Markdown thô để sao chép
+
+// --- Quản lý API Key và Giao diện ---
+
+/**
+ * Cập nhật giao diện dựa trên sự tồn tại của API Key.
+ * @param hasKey True nếu API key đã được cung cấp.
+ */
+function setUiForApiKey(hasKey: boolean) {
+  if (hasKey) {
+    appContent.classList.remove('disabled');
+    apiKeyStatus.textContent = 'Khóa API đã được lưu. Bạn có thể bắt đầu chuyển đổi.';
+    apiKeyStatus.style.color = '#34a853'; // Green
+    apiKeyStatus.classList.remove('hidden');
+    apiKeyInput.value = '******************'; // Che khóa đã lưu
+    saveApiKeyBtn.textContent = 'Cập nhật';
+  } else {
+    appContent.classList.add('disabled');
+    apiKeyStatus.textContent = 'Vui lòng nhập khóa API để sử dụng ứng dụng.';
+    apiKeyStatus.style.color = '#ea4335'; // Red for warning
+    apiKeyStatus.classList.remove('hidden');
+    saveApiKeyBtn.textContent = 'Lưu Khóa';
+  }
+}
+
+/**
+ * Lưu API key vào localStorage và cập nhật trạng thái.
+ */
+function saveApiKey() {
+  const inputKey = apiKeyInput.value.trim();
+  if (inputKey && inputKey !== '******************') {
+    apiKey = inputKey;
+    localStorage.setItem('gemini-api-key', apiKey);
+    setUiForApiKey(true);
+    alert('Đã lưu khóa API thành công!');
+  } else if (inputKey === '******************') {
+    alert('Để cập nhật, vui lòng nhập khóa API mới.');
+    apiKeyInput.value = '';
+    apiKeyInput.focus();
+  }
+  else {
+    alert('Vui lòng nhập một khóa API hợp lệ.');
+  }
+}
+
+/**
+ * Tải API key từ localStorage khi khởi động.
+ */
+function loadApiKey() {
+  const storedKey = localStorage.getItem('gemini-api-key');
+  if (storedKey) {
+    apiKey = storedKey;
+    setUiForApiKey(true);
+  } else {
+    setUiForApiKey(false);
+  }
+}
+
 
 // --- Các hàm tiện ích (Helpers) ---
 
@@ -124,6 +187,27 @@ function renderError(error: unknown) {
 
 // --- Gán các sự kiện (Event Listeners) ---
 
+// Khởi tạo ứng dụng khi tải trang
+document.addEventListener('DOMContentLoaded', loadApiKey);
+
+// Lưu API key
+saveApiKeyBtn.addEventListener('click', saveApiKey);
+
+// Xóa placeholder khi người dùng focus vào input
+apiKeyInput.addEventListener('focus', () => {
+    if (apiKeyInput.value === '******************') {
+        apiKeyInput.value = '';
+    }
+});
+
+// Khôi phục placeholder nếu người dùng không nhập gì
+apiKeyInput.addEventListener('blur', () => {
+    if (apiKeyInput.value === '' && apiKey) {
+        apiKeyInput.value = '******************';
+    }
+});
+
+
 // Mở cửa sổ chọn file khi nhấp vào khu vực tải lên
 uploadArea.addEventListener('click', () => uploadInput.click());
 
@@ -154,6 +238,11 @@ uploadArea.addEventListener('drop', (event) => {
  * Sự kiện chính: Nhấp vào nút "Chuyển đổi".
  */
 convertBtn.addEventListener('click', async () => {
+  if (!apiKey) {
+    alert('Vui lòng cung cấp khóa API trước khi chuyển đổi.');
+    apiKeyInput.focus();
+    return;
+  }
   if (!selectedFile) {
     alert('Vui lòng chọn một file PDF.');
     return;
@@ -162,7 +251,7 @@ convertBtn.addEventListener('click', async () => {
   setLoadingState(true);
 
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: apiKey });
     const filePart = await fileToGenerativePart(selectedFile);
     const prompt = `Trích xuất tất cả văn bản, bảng biểu, và giữ nguyên cấu trúc từ file PDF này. 
     Định dạng kết quả đầu ra bằng Markdown. 
